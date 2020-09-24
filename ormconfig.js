@@ -10,7 +10,7 @@ module.exports = {
   database: process.env.DATABASE_NAME,
   entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: false,
-  logging: true,
+  logging: process.env.NODE_ENV === 'development',
   migrations: ['dist/database/migrations/*.js'],
   cli: {
     migrationsDir: 'database/migrations',
