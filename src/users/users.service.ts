@@ -33,6 +33,11 @@ export class UsersService {
 
   async update(id, body) {
     const user = await this.usersRepository.findOne(id);
+
+    if (!user) {
+      throw new BadRequestException('User not exist');
+    }
+
     user.name = body.name || user.name;
 
     if (body.email && body.email !== user.email) {
@@ -54,5 +59,9 @@ export class UsersService {
     const newUser = await this.usersRepository.save(user);
     delete newUser.password;
     return newUser;
+  }
+
+  delete(id) {
+    return this.usersRepository.delete(id);
   }
 }
