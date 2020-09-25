@@ -26,8 +26,33 @@ export class UsersService {
       throw new BadRequestException('Email already in use');
     }
 
-    const createdUser = await this.usersRepository.save(user);
-    delete createdUser.password;
-    return createdUser;
+    const newUser = await this.usersRepository.save(user);
+    delete newUser.password;
+    return newUser;
+  }
+
+  async update(id, body) {
+    const user = await this.usersRepository.findOne(id);
+    user.name = body.name || user.name;
+
+    if (body.email && body.email !== user.email) {
+      const emailExists = await this.usersRepository.findOne({
+        email: body.email,
+      });
+
+      if (emailExists) {
+        throw new BadRequestException('Email already in use');
+      }
+
+      user.email = body.email;
+    }
+
+    user.password = body.password
+      ? await bcrypt.hash(body.password, 10)
+      : user.password;
+
+    const newUser = await this.usersRepository.save(user);
+    delete newUser.password;
+    return newUser;
   }
 }
