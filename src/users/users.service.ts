@@ -12,6 +12,10 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  findAll() {
+    return this.usersRepository.find({ select: ['id', 'name', 'email'] });
+  }
+
   async create(body) {
     const user = new User();
     user.name = body.name;
